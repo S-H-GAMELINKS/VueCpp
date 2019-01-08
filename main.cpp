@@ -24,8 +24,14 @@ int main() {
 
     std::string body = LoadAssets("./assets/index.html");
 
+    std::string indexjs = LoadAssets("./assets/index.js");
+
     svr.Get("/", [&](const httplib::Request& req, httplib::Response& res) {
         res.set_content(body, "text/html");
+    });
+
+    svr.Get("/index.js", [&](const httplib::Request& req, httplib::Response& res) {
+        res.set_content(indexjs, "text/html");
     });
 
     svr.listen("localhost", 3000);
