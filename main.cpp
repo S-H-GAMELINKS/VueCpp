@@ -1,10 +1,24 @@
 #include <httplib.h>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 int main() {
 
     httplib::Server svr;
 
-    svr.set_base_dir("./assets");
+    std::ifstream file("./assets/index.html", std::ios::in);
+
+    std::stringstream stream;
+
+    stream << file.rdbuf();
+    file.close();
+
+    std::string body(stream.str());
+
+    svr.Get("/", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_content(body, "text/html");
+    });
 
     svr.listen("localhost", 3000);
 
