@@ -3,20 +3,28 @@
 #include <sstream>
 #include <string>
 
+const std::string LoadAssets(const std::string& path) {
+
+    std::ifstream file(path.c_str(), std::ios::in);
+    
+    std::stringstream stream;
+
+    stream << file.rdbuf();
+
+    file.close();
+
+    std::string assets(stream.str());
+
+    return assets;
+}
+
 int main() {
 
     httplib::Server svr;
 
-    std::ifstream file("./assets/index.html", std::ios::in);
+    std::string body = LoadAssets("./assets/index.html");
 
-    std::stringstream stream;
-
-    stream << file.rdbuf();
-    file.close();
-
-    std::string body(stream.str());
-
-    svr.Get("/", [](const httplib::Request& req, httplib::Response& res) {
+    svr.Get("/", [&](const httplib::Request& req, httplib::Response& res) {
         res.set_content(body, "text/html");
     });
 
